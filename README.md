@@ -1,41 +1,37 @@
-# serverless-disable-functions
+# serverless-ignore-triggers
 
-A simple serverless plugin to disable functions.
+A simple serverless plugin to remove all events bound to a function upon deployment. The goal is to avoid the function to be called.
 
 ## Install
 
 ```sh
-yarn add --dev serverless-disable-functions
-```
-
-or
-
-```sh
-npm install --save-dev serverless-disable-functions
+npm install --save-dev serverless-ignore-triggers
 ```
 
 Add the plugin to your serverless.yml file:
 
 ```yaml
 plugins:
-  - serverless-disable-functions
+  - serverless-ignore-triggers
 ```
 
 ## Usage
 
-Add the parameter `enabled: false` to a function to disable it.
-This allows you to enable/disable functions by stage like so:
+Add the parameter `ignoreTriggers: false` to a function to remove all events.
 
-```yaml
-service: hello-service
-provider: aws
-custom:
-  hello_enabled:
-    dev: true
-    prod: false
 
+```
 functions:
   hello:
     handler: handler.hello
-    enabled: ${self:custom.hello_enabled.${opt:stage}}
+    ignoreTriggers: true
+```
+
+In case you need to parse a `string` as `bool` for example if you are using `env`; you need to use `strToBool`:
+
+```
+functions:
+  hello:
+    handler: handler.hello
+    ignoreTriggers: strToBool(${env:SAY_HELLO_ENABLED})
 ```
